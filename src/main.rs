@@ -7,7 +7,22 @@ fn startup() {
 }
 
 async fn greet() -> impl Responder {
-    "Hello from the API server!"
+    "REQUEST CAI CON CAK
+    <br>REQUEST CAI CON CAK
+    <br>REQUEST CAI CON CAK
+    <br>REQUEST CAI CON CAK
+    <br>REQUEST CAI CON CAK
+    <br>REQUEST CAI CON CAK
+    <br>REQUEST CAI CON CAK
+    <br>REQUEST CAI CON CAK
+    <br>REQUEST CAI CON CAK
+    <br>REQUEST CAI CON CAK
+    <br>REQUEST CAI CON CAK
+    <br>REQUEST CAI CON CAK
+    <br>REQUEST CAI CON CAK
+    "
+
+    
 }
 
 #[actix_web::main]

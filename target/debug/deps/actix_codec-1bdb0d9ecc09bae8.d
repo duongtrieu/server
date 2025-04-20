@@ -1,0 +1,10 @@
+d:\New folder\server\target\debug\deps\libactix_codec-1bdb0d9ecc09bae8.rmeta: C:\Users\URANI\ Cyber\ Game\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\actix-codec-0.5.2\src\lib.rs C:\Users\URANI\ Cyber\ Game\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\actix-codec-0.5.2\src\bcodec.rs C:\Users\URANI\ Cyber\ Game\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\actix-codec-0.5.2\src\framed.rs C:\Users\URANI\ Cyber\ Game\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\actix-codec-0.5.2\src\lines.rs
+
+d:\New folder\server\target\debug\deps\libactix_codec-1bdb0d9ecc09bae8.rlib: C:\Users\URANI\ Cyber\ Game\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\actix-codec-0.5.2\src\lib.rs C:\Users\URANI\ Cyber\ Game\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\actix-codec-0.5.2\src\bcodec.rs C:\Users\URANI\ Cyber\ Game\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\actix-codec-0.5.2\src\framed.rs C:\Users\URANI\ Cyber\ Game\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\actix-codec-0.5.2\src\lines.rs
+
+d:\New folder\server\target\debug\deps\actix_codec-1bdb0d9ecc09bae8.d: C:\Users\URANI\ Cyber\ Game\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\actix-codec-0.5.2\src\lib.rs C:\Users\URANI\ Cyber\ Game\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\actix-codec-0.5.2\src\bcodec.rs C:\Users\URANI\ Cyber\ Game\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\actix-codec-0.5.2\src\framed.rs C:\Users\URANI\ Cyber\ Game\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\actix-codec-0.5.2\src\lines.rs
+
+C:\Users\URANI\ Cyber\ Game\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\actix-codec-0.5.2\src\lib.rs:
+C:\Users\URANI\ Cyber\ Game\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\actix-codec-0.5.2\src\bcodec.rs:
+C:\Users\URANI\ Cyber\ Game\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\actix-codec-0.5.2\src\framed.rs:
+C:\Users\URANI\ Cyber\ Game\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\actix-codec-0.5.2\src\lines.rs:
