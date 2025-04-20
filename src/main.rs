@@ -1,49 +1,61 @@
-use actix_web::{web, App, HttpServer, Responder, middleware::Logger};
-use std::env;
+use warp::Filter;
+use uuid::Uuid;
+use std::collections::HashMap;
+use std::sync::{Arc, Mutex};
+use warp::ws::{Message, WebSocket};
+use futures::{SinkExt, StreamExt};
 
-fn startup() {
-    println!("Server starting up...");
-    env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
+type Clients = Arc<Mutex<HashMap<String, tokio::sync::mpsc::UnboundedSender<Message>>>>;
+
+#[tokio::main]
+async fn main() {
+    let clients: Clients = Arc::new(Mutex::new(HashMap::new()));
+
+    let chat_route = warp::path("ws")
+        .and(warp::ws())
+        .and(with_clients(clients.clone()))
+        .map(|ws: warp::ws::Ws, clients| {
+            ws.on_upgrade(move |socket| client_connected(socket, clients))
+        });
+
+    warp::serve(chat_route).run(([0, 0, 0, 0], 3030)).await;
 }
 
-async fn greet() -> impl Responder {
-    "REQUEST CAI CON CAK
-    <br>REQUEST CAI CON CAK
-    <br>REQUEST CAI CON CAK
-    <br>REQUEST CAI CON CAK
-    <br>REQUEST CAI CON CAK
-    <br>REQUEST CAI CON CAK
-    <br>REQUEST CAI CON CAK
-    <br>REQUEST CAI CON CAK
-    <br>REQUEST CAI CON CAK
-    <br>REQUEST CAI CON CAK
-    <br>REQUEST CAI CON CAK
-    <br>REQUEST CAI CON CAK
-    <br>REQUEST CAI CON CAK
-    "
-
-    
+fn with_clients(
+    clients: Clients,
+) -> impl Filter<Extract = (Clients,), Error = std::convert::Infallible> + Clone {
+    warp::any().map(move || clients.clone())
 }
 
-#[actix_web::main]
-async fn main() -> std::io::Result<()> {
-    // Call the startup function
-    startup();
-    
-    // Get port from environment or use default 8080
-    let port = env::var("PORT").unwrap_or_else(|_| "8080".to_string());
-    let address = format!("0.0.0.0:{}", port);
-    
-    println!("Server listening on {}", address);
-    
-    HttpServer::new(|| {
-        App::new()
-            .wrap(Logger::default())
-            .route("/", web::get().to(greet))
-    })
-    .workers(2) // Adjust based on your server's capability
-    .keep_alive(std::time::Duration::from_secs(120)) // Set keep-alive timeout
-    .bind(&address)?
-    .run()
-    .await
+async fn client_connected(ws: WebSocket, clients: Clients) {
+    let (tx, mut rx) = ws.split();
+    let (client_tx, mut client_rx) = tokio::sync::mpsc::unbounded_channel();
+    let id = uuid::Uuid::new_v4().to_string();
+    println!("Client connected: {}", id);
+    let clients_clone = clients.clone();
+    let id_clone = id.clone();
+    let tx = tokio::spawn(async move {
+        while let Some(message) = client_rx.recv().await {
+            clients_clone.lock().unwrap().insert(id_clone.clone(), client_tx.clone());
+            let _ = client_tx.send(message.into());
+            break;
+        }
+    });
+
+    while let Some(Ok(msg)) = rx.next().await {
+        if msg.is_text() {
+            let message = msg.to_str().unwrap();
+            let peers = clients.lock().unwrap();
+            for (peer_id, sender) in peers.iter() {
+                if peer_id != &id {
+                    if let Err(e) = sender.send(Message::text(message)) {
+                        eprintln!("Failed to send message to peer: {}", e);
+                    }
+                }
+            }
+        }
+    }
+
+    clients.lock().unwrap().remove(&id);
+    println!("Client disconnected: {}", id);
 }
