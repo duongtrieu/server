@@ -28,20 +28,24 @@ fn with_clients(
 }
 
 async fn client_connected(ws: WebSocket, clients: Clients) {
-    let (tx, mut rx) = ws.split();
+    let (mut tx, mut rx) = ws.split();
     let (client_tx, mut client_rx) = tokio::sync::mpsc::unbounded_channel();
-    let id = uuid::Uuid::new_v4().to_string();
+    let id = Uuid::new_v4().to_string();
     println!("Client connected: {}", id);
-    let id_clone = id.clone();
-    let clients_clone = clients.clone();
-    let tx = tokio::spawn(async move {
+
+    // Register the client immediately
+    clients.lock().unwrap().insert(id.clone(), client_tx);
+
+    // Spawn a task to handle outgoing messages
+    tokio::spawn(async move {
         while let Some(message) = client_rx.recv().await {
-            clients_clone.lock().unwrap().insert(id_clone.clone(), client_tx.clone());
-            let _ = client_tx.send(message.into());
-            break;
+            if tx.send(message).await.is_err() {
+                break;
+            }
         }
     });
 
+    // Handle incoming messages
     while let Some(Ok(msg)) = rx.next().await {
         if msg.is_text() {
             let message = msg.to_str().unwrap();
@@ -56,6 +60,7 @@ async fn client_connected(ws: WebSocket, clients: Clients) {
         }
     }
 
+    // Remove the client when disconnected
     clients.lock().unwrap().remove(&id);
     println!("Client disconnected: {}", id);
 }
