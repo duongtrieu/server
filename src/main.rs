@@ -32,8 +32,8 @@ async fn client_connected(ws: WebSocket, clients: Clients) {
     let (client_tx, mut client_rx) = tokio::sync::mpsc::unbounded_channel();
     let id = uuid::Uuid::new_v4().to_string();
     println!("Client connected: {}", id);
-    let clients_clone = clients.clone();
     let id_clone = id.clone();
+    let clients_clone = clients.clone();
     let tx = tokio::spawn(async move {
         while let Some(message) = client_rx.recv().await {
             clients_clone.lock().unwrap().insert(id_clone.clone(), client_tx.clone());
@@ -49,7 +49,7 @@ async fn client_connected(ws: WebSocket, clients: Clients) {
             for (peer_id, sender) in peers.iter() {
                 if peer_id != &id {
                     if let Err(e) = sender.send(Message::text(message)) {
-                        eprintln!("Failed to send message to peer: {}", e);
+                        eprintln!("Error sending message to peer {}: {}", peer_id, e);
                     }
                 }
             }
